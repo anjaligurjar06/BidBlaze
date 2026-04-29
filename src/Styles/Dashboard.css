@@ -1,0 +1,184 @@
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  color: #e2e8f0;
+
+  background: 
+    linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), /* lighter */
+    url("./assets/image.png");
+
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+/* CONTAINER */
+.container {
+  display: flex;
+  min-height: 100vh;
+
+  max-width: 1400px;   /* keeps content centered */
+  margin: 0 auto;      /* center horizontally */
+}
+
+/* LEFT SIDE */
+.left {
+  width: 50%;
+  padding: 40px;
+
+  background: rgba(15, 23, 42, 0.5);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  min-height: 100vh;
+}
+
+/* HEAD */
+h2 {
+  font-size: 36px;       /* bigger */
+  font-weight: 700;
+  margin-bottom: 25px;
+  letter-spacing: 0.5px;
+}
+
+/* CARDS */
+.card {
+  background: rgba(30, 41, 59, 0.6);   /* transparent */
+  backdrop-filter: blur(10px);        /* glass effect */
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* LIST ITEMS */
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-top: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* HOVER EFFECT */
+.listItem:hover {
+  background: rgba(236, 72, 153, 0.15); /* pink glow */
+  transform: translateX(5px);
+}
+
+/* PRICE */
+.price small {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.price span {
+  font-weight: bold;
+}
+
+/* STATUS */
+.sold {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.pending {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+/* RIGHT SIDE */
+.right {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 120px;
+
+  background: transparent; /* IMPORTANT */
+}
+
+/* PREMIUM BUTTONS */
+.bigButton {
+  width: 420px;
+  height: 240px;
+
+  border-radius: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 32px;        /* ⬅️ bigger text */
+  font-weight: 800;       /* ⬅️ bolder */
+  letter-spacing: 1.5px;
+
+  color: #000;            /* ⬅️ BLACK TEXT */
+
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  transform: rotate(-4deg);
+  transition: all 0.4s ease;
+
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+
+/* BUTTON COLORS */
+.top {
+  background: linear-gradient(135deg, #22c55e, #4ade80);
+  color: #022c22;
+  transform: rotate(-4deg);
+}
+
+.bottom {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  color: #020617;
+  transform: rotate(4deg);   /* opposite tilt */
+}
+
+/* GLOW EFFECT */
+.bigButton::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+  opacity: 0;
+  transition: 0.4s;
+}
+
+/* HOVER */
+.bigButton:hover::after {
+  opacity: 1;
+}
+
+.bigButton:hover {
+  transform: rotate(0deg) scale(1.1);
+  box-shadow: 0 35px 70px rgba(0,0,0,0.7);
+}
+.bigButton::before {
+  content: "";
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.3),
+    transparent
+  );
+  top: -50%;
+  left: -50%;
+  transform: rotate(25deg);
+  transition: 0.6s;
+}
+
+.bigButton:hover::before {
+  left: 120%;
+}

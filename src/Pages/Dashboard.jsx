@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { bids as initialBids, items as initialItems } from "../data/data";
-
+import "../Styles/Dashboard.css";
+import AuctionPage from "./AuctionPage";
 const Dashboard = () => {
   const navigate = useNavigate();
 
@@ -45,7 +46,7 @@ const Dashboard = () => {
 
       {/* RIGHT SIDE */}
       <div className="right">
-        <div className="bigButton top" onClick={() => navigate("/bidder")}>
+        <div className="bigButton top" onClick={() => navigate("/bid-zone")}>
           Become a Bidder
         </div>
 

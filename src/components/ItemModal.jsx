@@ -3,11 +3,14 @@ function ItemModal({ selectedItem, setSelectedItem }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 flex justify-center items-center z-50"
+      className="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
       onClick={() => setSelectedItem(null)}
     >
       <div
-        className="bg-white w-175 max-h-[90vh] overflow-y-auto rounded-2xl p-8"
+        className="bg-[rgba(30,41,59,0.6)] backdrop-blur-xl 
+        w-700px max-h-[90vh] overflow-y-auto 
+        rounded-2xl p-8 
+        shadow-[0_25px_50px_rgba(0,0,0,0.6)] text-white"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between mb-5">
@@ -29,7 +32,7 @@ function ItemModal({ selectedItem, setSelectedItem }) {
           />
         )}
 
-        <div className="space-y-3 text-lg">
+        <div className="space-y-3 text-lg text-slate-300">
           <p><b>ID:</b> {selectedItem.id}</p>
           <p><b>Company:</b> {selectedItem.company}</p>
           <p><b>Age:</b> {selectedItem.age}</p>

@@ -11,15 +11,21 @@ function AddAuction({ setItems, items }) {
     age: "",
     condition: "",
     description: "",
+    duration: "",
   });
 
   function handleChange(e) {
     const { name, value, files } = e.target;
 
     if (name === "image") {
+      const file = files[0];
+      if (!file) return;
+
+      const imageUrl = URL.createObjectURL(file);
+
       setFormData({
         ...formData,
-        image: URL.createObjectURL(files[0]),
+        image: imageUrl,
       });
     } else {
       setFormData({
@@ -32,11 +38,16 @@ function AddAuction({ setItems, items }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-      const newItem = {
+    if (!formData.duration) {
+      alert("Enter duration");
+      return;
+    }
+
+    const newItem = {
       id: items.length + 101,
       name: formData.name,
       status: "Active",
-      timeLeft: 28800,
+      endTime: Date.now() + Number(formData.duration) * 1000,
       image: formData.image,
       company: formData.company,
       age: formData.age,
@@ -55,6 +66,7 @@ function AddAuction({ setItems, items }) {
       age: "",
       condition: "",
       description: "",
+      duration: "",
     });
 
     setShowForm(false);
@@ -82,13 +94,18 @@ function AddAuction({ setItems, items }) {
       >
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-2xl p-8 shadow-sm space-y-4"
+          className="bg-[rgba(30,41,59,0.6)] backdrop-blur-lg 
+          rounded-2xl p-8 
+          shadow-[0_10px_30px_rgba(0,0,0,0.4)] 
+          space-y-4"
         >
           <input
             type="file"
             name="image"
             onChange={handleChange}
-            className="w-full border p-3 rounded-xl"
+            className="w-full bg-slate-800 border border-slate-600 
+            text-white p-3 rounded-xl 
+            focus:outline-none focus:border-blue-400"
             required
           />
 
@@ -98,7 +115,9 @@ function AddAuction({ setItems, items }) {
             placeholder="Product Name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full border p-3 rounded-xl"
+            className="w-full bg-slate-800 border border-slate-600 
+            text-white p-3 rounded-xl 
+            focus:outline-none focus:border-blue-400"
             required
           />
 
@@ -108,7 +127,9 @@ function AddAuction({ setItems, items }) {
             placeholder="How old is product?"
             value={formData.age}
             onChange={handleChange}
-            className="w-full border p-3 rounded-xl"
+            className="w-full bg-slate-800 border border-slate-600 
+            text-white p-3 rounded-xl 
+            focus:outline-none focus:border-blue-400"
             required
           />
 
@@ -118,16 +139,21 @@ function AddAuction({ setItems, items }) {
             placeholder="Starting Price"
             value={formData.price}
             onChange={handleChange}
-            className="w-full border p-3 rounded-xl"
+            className="w-full bg-slate-800 border border-slate-600 
+            text-white p-3 rounded-xl 
+            focus:outline-none focus:border-blue-400"
             required
           />
+
           <input
-            type="time"
-            name="timer"
-            placeholder="Auction Timer"
-            value={formData.timer}
+            type="number"
+            name="duration"
+            placeholder="Duration (seconds)"
+            value={formData.duration}
             onChange={handleChange}
-            className="w-full border p-3 rounded-xl"
+            className="w-full bg-slate-800 border border-slate-600 
+            text-white p-3 rounded-xl 
+            focus:outline-none focus:border-blue-400"
             required
           />
 
@@ -137,7 +163,9 @@ function AddAuction({ setItems, items }) {
             placeholder="Company Name"
             value={formData.company}
             onChange={handleChange}
-            className="w-full border p-3 rounded-xl"
+            className="w-full bg-slate-800 border border-slate-600 
+            text-white p-3 rounded-xl 
+            focus:outline-none focus:border-blue-400"
             required
           />
 
@@ -147,7 +175,8 @@ function AddAuction({ setItems, items }) {
             value={formData.condition}
             onChange={handleChange}
             rows="4"
-            className="w-full border p-3 rounded-xl"
+            className="w-full bg-slate-800 border border-slate-600 
+            text-white p-3 rounded-xl"
             required
           ></textarea>
 
@@ -157,7 +186,8 @@ function AddAuction({ setItems, items }) {
             value={formData.description}
             onChange={handleChange}
             rows="5"
-            className="w-full border p-3 rounded-xl"
+            className="w-full bg-slate-800 border border-slate-600 
+            text-white p-3 rounded-xl"
             required
           ></textarea>
 

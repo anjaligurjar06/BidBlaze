@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";   // ✅ ADD THIS
 import "../Styles/Login.css";
 import { Link } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();   // ✅ ADD THIS
+
   const [formData, setFormData] = useState({
     email: "",
     uniqueId: "",
@@ -19,18 +22,18 @@ function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Get saved data from localStorage
     const savedEmail = localStorage.getItem("email");
     const savedId = localStorage.getItem("uniqueId");
     const savedPassword = localStorage.getItem("password");
 
-    // Check entered data with saved data
     if (
       formData.email === savedEmail &&
       formData.uniqueId === savedId &&
       formData.password === savedPassword
     ) {
       alert("Login Successful");
+
+      navigate("/dashboard");   // ✅ THIS IS THE FIX
     } else {
       alert("Wrong Credentials");
     }
@@ -42,7 +45,6 @@ function Login() {
         <h2>Login Page</h2>
 
         <form onSubmit={handleLogin}>
-          {/* First Email */}
           <input
             type="email"
             name="email"
@@ -52,7 +54,6 @@ function Login() {
             required
           />
 
-          {/* Second Unique ID */}
           <input
             type="text"
             name="uniqueId"
@@ -62,7 +63,6 @@ function Login() {
             required
           />
 
-          {/* Third Password */}
           <input
             type="password"
             name="password"

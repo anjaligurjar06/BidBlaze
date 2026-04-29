@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import AddAuction from "./components/AddAuction";
-import ItemModal from "./components/ItemModal";
-import AuctionCard from "./components/AuctionCard";
+import AddAuction from "../components/AddAuction";
+import ItemModal from "../components/ItemModal";
+import AuctionCard from "../components/AuctionCard";
 
-function App() {
+function AuctionPage() {
   const [items, setItems] = useState([
     {
       id: 101,
@@ -70,7 +70,6 @@ function App() {
               status: updatedTime === 0 ? "Completed" : "Active",
             };
           }
-
           return item;
         })
       );
@@ -80,10 +79,17 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-100 px-6 py-10">
+    <div className="min-h-screen px-6 py-10 
+    bg-[linear-gradient(rgba(15,23,42,0.35),rgba(15,23,42,0.45)),url('/assets/image.png')] 
+    bg-cover bg-center bg-fixed text-slate-200">
+
       <div className="max-w-6xl mx-auto">
 
-        <div className="grid grid-cols-4 bg-blue-100 text-blue-900 font-semibold text-lg rounded-2xl px-8 py-5 mb-5 shadow-sm">
+        <div className="grid grid-cols-4 
+        bg-[rgba(30,41,59,0.6)] backdrop-blur-lg 
+        text-slate-200 font-semibold text-lg 
+        rounded-2xl px-8 py-5 mb-5 
+        shadow-[0_10px_30px_rgba(0,0,0,0.4)]">
           <span>ID</span>
           <span>Name</span>
           <span>Status</span>
@@ -106,35 +112,9 @@ function App() {
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
         />
-
       </div>
     </div>
   );
 }
 
-export default App;
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-
-const Bidder = () => <h1>Bidder Page</h1>;
-const ListItem = () => <h1>List Item Page</h1>;
-
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/bidder" element={<Bidder />} />
-        <Route path="/list-item" element={<ListItem />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
-export default App;
+export default AuctionPage;
