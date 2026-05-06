@@ -3,36 +3,30 @@ import { useEffect, useState } from "react";
 function AuctionCard({ item, setSelectedItem }) {
   const [, forceUpdate] = useState(0);
 
-  // 🔁 re-render every second (for live countdown)
   useEffect(() => {
-    const interval = setInterval(() => {
-      forceUpdate((p) => p + 1);
-    }, 1000);
-
+    const interval = setInterval(() => forceUpdate((p) => p + 1), 1000);
     return () => clearInterval(interval);
   }, []);
 
   function formatTime(seconds) {
+    if (seconds <= 0) return "00:00:00";
     const hrs = String(Math.floor(seconds / 3600)).padStart(2, "0");
     const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
     const secs = String(seconds % 60).padStart(2, "0");
-
     return `${hrs}:${mins}:${secs}`;
   }
 
-  // ✅ HANDLE BOTH TYPES
-  let timeLeft;
-
-  if (item.endTime) {
-    // 🟢 NEW ITEMS → dynamic countdown
-    timeLeft = Math.max(
-      0,
-      Math.floor((item.endTime - Date.now()) / 1000)
-    );
+  // Handle end_time from backend (ISO string) or legacy fields
+  let timeLeft = 0;
+  if (item.end_time) {
+    timeLeft = Math.max(0, Math.floor((new Date(item.end_time).getTime() - Date.now()) / 1000));
+  } else if (item.endTime) {
+    timeLeft = Math.max(0, Math.floor((item.endTime - Date.now()) / 1000));
   } else {
-    // ⚪ OLD ITEMS → keep constant
     timeLeft = item.timeLeft || 0;
   }
+
+  const isActive = timeLeft > 0 && item.status === "Active";
 
   return (
     <div
@@ -48,28 +42,22 @@ function AuctionCard({ item, setSelectedItem }) {
       <span>{item.id}</span>
 
       <span className="font-semibold group-hover:text-white transition">
-        {item.name}
+        {item.title || item.name}
       </span>
 
       <span>
-        <span
-          className={`px-4 py-2 rounded-full text-sm font-bold transition ${
-            item.status === "Active"
-              ? "bg-green-500/20 text-green-400 group-hover:bg-green-500/30"
-              : "bg-slate-600/40 text-slate-300 group-hover:bg-slate-500/40"
-          }`}
-        >
-          {item.status}
+        <span className={`px-4 py-2 rounded-full text-sm font-bold transition ${
+          isActive
+            ? "bg-green-500/20 text-green-400 group-hover:bg-green-500/30"
+            : "bg-slate-600/40 text-slate-300 group-hover:bg-slate-500/40"
+        }`}>
+          {isActive ? "Active" : "Completed"}
         </span>
       </span>
 
-      <span
-        className={`font-bold text-lg transition ${
-          item.status === "Active"
-            ? "text-red-400 group-hover:text-red-300"
-            : "text-slate-500"
-        }`}
-      >
+      <span className={`font-bold text-lg transition ${
+        isActive ? "text-red-400 group-hover:text-red-300" : "text-slate-500"
+      }`}>
         {formatTime(timeLeft)}
       </span>
     </div>

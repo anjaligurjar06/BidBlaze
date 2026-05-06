@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../Styles/Signup.css";
 import { Link } from "react-router-dom";
-
+import { apiFetch } from "../api";
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -18,26 +18,27 @@ function Signup() {
     });
   };
 
-  const handleSignup = (e) => {
-    e.preventDefault();
-
-    const generatedId =
-      "UID" + Math.floor(1000 + Math.random() * 9000);
-
-    // Save in localStorage
-    localStorage.setItem("name", formData.name);
-    localStorage.setItem("email", formData.email);
-    localStorage.setItem("password", formData.password);
-    localStorage.setItem("uniqueId", generatedId);
-
-    // Show generated ID on screen
-    setFormData({
-      ...formData,
-      uniqueId: generatedId,
+ const handleSignup = async (e) => {
+  e.preventDefault();
+  try {
+    const data = await apiFetch("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      }),
     });
-
-    alert("Signup Successful");
-  };
+    localStorage.setItem("token", data.access_token);
+    localStorage.setItem("name", data.name);
+    localStorage.setItem("uniqueId", data.unique_id);
+    localStorage.setItem("userId", data.id);
+    setFormData({ ...formData, uniqueId: data.unique_id });
+    alert(`Signup Successful! Your Unique ID: ${data.unique_id} — save this for login!`);
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
   return (
     <div className="signup-container">

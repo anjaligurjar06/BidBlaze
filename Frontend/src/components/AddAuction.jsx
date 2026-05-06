@@ -2,10 +2,10 @@ import { useState } from "react";
 
 function AddAuction({ setItems, items }) {
   const [showForm, setShowForm] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
-    image: "",
     price: "",
     company: "",
     age: "",
@@ -16,60 +16,49 @@ function AddAuction({ setItems, items }) {
 
   function handleChange(e) {
     const { name, value, files } = e.target;
-
     if (name === "image") {
-      const file = files[0];
-      if (!file) return;
-
-      const imageUrl = URL.createObjectURL(file);
-
-      setFormData({
-        ...formData,
-        image: imageUrl,
-      });
+      setImageFile(files[0]);
     } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+      setFormData({ ...formData, [name]: value });
     }
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    if (!formData.duration) { alert("Enter duration"); return; }
 
-    if (!formData.duration) {
-      alert("Enter duration");
-      return;
+    try {
+      const token = localStorage.getItem("token");
+      const fd = new FormData();
+      fd.append("title", formData.name);
+      fd.append("description", formData.description);
+      fd.append("start_price", Number(formData.price));
+      fd.append("duration_seconds", Number(formData.duration));
+      fd.append("company", formData.company);
+      fd.append("age", formData.age);
+      fd.append("condition", formData.condition);
+      if (imageFile) fd.append("image", imageFile);
+
+      const res = await fetch("http://localhost:8000/auctions/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.detail || "Failed to add item");
+        return;
+      }
+
+      const newAuction = await res.json();
+      setItems((prev) => [...prev, newAuction]);
+      setFormData({ name: "", price: "", company: "", age: "", condition: "", description: "", duration: "" });
+      setImageFile(null);
+      setShowForm(false);
+    } catch (err) {
+      alert("Failed to add item");
     }
-
-    const newItem = {
-      id: items.length + 101,
-      name: formData.name,
-      status: "Active",
-      endTime: Date.now() + Number(formData.duration) * 1000,
-      image: formData.image,
-      company: formData.company,
-      age: formData.age,
-      price: formData.price,
-      condition: formData.condition,
-      description: formData.description,
-    };
-
-    setItems([...items, newItem]);
-
-    setFormData({
-      name: "",
-      image: "",
-      price: "",
-      company: "",
-      age: "",
-      condition: "",
-      description: "",
-      duration: "",
-    });
-
-    setShowForm(false);
   }
 
   return (
@@ -80,7 +69,6 @@ function AddAuction({ setItems, items }) {
           className="group relative w-full rounded-2xl bg-white py-4 text-xl font-bold text-slate-800 overflow-hidden border border-slate-200 transition-all duration-300 hover:scale-[1.01]"
         >
           <span className="absolute inset-0 w-0 bg-blue-600 transition-all duration-500 group-hover:w-full"></span>
-
           <span className="relative z-10 group-hover:text-white">
             ➕ Add Item To Auction
           </span>
@@ -89,7 +77,7 @@ function AddAuction({ setItems, items }) {
 
       <div
         className={`overflow-hidden transition-all duration-500 ${
-          showForm ? "max-h-1000px mb-6" : "max-h-0"
+          showForm ? "max-h-[2000px] mb-6" : "max-h-0"
         }`}
       >
         <form
@@ -102,11 +90,11 @@ function AddAuction({ setItems, items }) {
           <input
             type="file"
             name="image"
+            accept="image/*"
             onChange={handleChange}
             className="w-full bg-slate-800 border border-slate-600 
             text-white p-3 rounded-xl 
             focus:outline-none focus:border-blue-400"
-            required
           />
 
           <input
@@ -136,7 +124,7 @@ function AddAuction({ setItems, items }) {
           <input
             type="number"
             name="price"
-            placeholder="Starting Price"
+            placeholder="Starting Price (₹)"
             value={formData.price}
             onChange={handleChange}
             className="w-full bg-slate-800 border border-slate-600 
@@ -148,7 +136,7 @@ function AddAuction({ setItems, items }) {
           <input
             type="number"
             name="duration"
-            placeholder="Duration (seconds)"
+            placeholder="Duration in seconds (e.g. 3600 = 1 hour, 86400 = 1 day)"
             value={formData.duration}
             onChange={handleChange}
             className="w-full bg-slate-800 border border-slate-600 
@@ -191,7 +179,10 @@ function AddAuction({ setItems, items }) {
             required
           ></textarea>
 
-          <button className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition"
+          >
             Submit Item
           </button>
         </form>

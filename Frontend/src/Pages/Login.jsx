@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";   // ✅ ADD THIS
 import "../Styles/Login.css";
 import { Link } from "react-router-dom";
-
+import { apiFetch } from "../api";
 function Login() {
   const navigate = useNavigate();   // ✅ ADD THIS
 
   const [formData, setFormData] = useState({
     email: "",
-    uniqueId: "",
+    unique_id: "",
     password: "",
   });
 
@@ -19,25 +19,23 @@ function Login() {
     });
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    const savedEmail = localStorage.getItem("email");
-    const savedId = localStorage.getItem("uniqueId");
-    const savedPassword = localStorage.getItem("password");
-
-    if (
-      formData.email === savedEmail &&
-      formData.uniqueId === savedId &&
-      formData.password === savedPassword
-    ) {
-      alert("Login Successful");
-
-      navigate("/dashboard");   // ✅ THIS IS THE FIX
-    } else {
-      alert("Wrong Credentials");
-    }
-  };
+ const handleLogin = async (e) => {
+  e.preventDefault();
+  try {
+    const data = await apiFetch("/auth/login", {
+      method: "POST",
+      body: JSON.stringify(formData),
+    });
+    localStorage.setItem("token", data.access_token);
+    localStorage.setItem("name", data.name);
+    localStorage.setItem("uniqueId", data.unique_id);
+    localStorage.setItem("userId", data.id);
+    alert("Login Successful");
+    navigate("/dashboard");
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
   return (
     <div className="login-container">
@@ -56,7 +54,7 @@ function Login() {
 
           <input
             type="text"
-            name="uniqueId"
+            name="unique_id"
             placeholder="Enter Unique ID"
             value={formData.uniqueId}
             onChange={handleChange}

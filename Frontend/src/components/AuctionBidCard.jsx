@@ -1,10 +1,11 @@
-function AuctionCard({ auction, onClick }) {
+function AuctionBidCard({ auction, onClick }) {
   const highestBid =
     auction?.bids?.length > 0
       ? Math.max(...auction.bids.map((b) => b.amount))
-      : 0;
+      : auction.start_price || 0;
 
-  const timeLeft = Math.max(0, auction.endTime - Date.now());
+  // Use end_time from backend
+  const timeLeft = Math.max(0, new Date(auction.end_time).getTime() - Date.now());
   const ended = timeLeft <= 0;
 
   return (
@@ -12,12 +13,18 @@ function AuctionCard({ auction, onClick }) {
       onClick={onClick}
       className="cursor-pointer bg-white rounded-2xl shadow hover:shadow-xl transition-all duration-200 overflow-hidden border border-gray-100 group"
     >
-      <div className="relative overflow-hidden h-48">
-        <img
-          src={auction.image}
-          alt={auction.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        />
+      <div className="relative overflow-hidden h-48 bg-gray-100">
+        {auction.image ? (
+          <img
+            src={auction.image}
+            alt={auction.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-400 text-4xl">
+            🏷️
+          </div>
+        )}
         {ended && (
           <div className="absolute top-2 right-2 bg-gray-800 text-white text-xs px-2 py-1 rounded-full">
             Ended
@@ -45,4 +52,4 @@ function AuctionCard({ auction, onClick }) {
   );
 }
 
-export default AuctionCard;
+export default AuctionBidCard;
