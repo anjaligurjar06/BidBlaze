@@ -1,4 +1,4 @@
-# 🏷️ Auction App
+# 🏷️BIDBLAZE- Auction App
 
 A full-stack real-time auction platform. Users can list items for auction and bid on live listings with countdown timers and outbid notifications.
 
